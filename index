@@ -176,7 +176,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--navy2);outline-o
 
 <script>
 /* ========= ตั้งค่า: ใส่ URL ของ Apps Script Web App ตรงนี้ ========= */
-const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+const API_URL = "https://script.google.com/macros/s/AKfycbwXlVPF2mVc1KoUTVLk9O4b4T7nNrqlOYZbqcYKtIiXpuPNiE7pKURDa_bqwm_lXBYt/exec";
 /* ================================================================= */
 
 const $ = id => document.getElementById(id);
