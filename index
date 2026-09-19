@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บันทึกบิลขนส่ง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Noto+Sans+Myanmar:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1f3864; --navy2:#2f4f8f; --bg:#f4f6fa; --card:#fff;
+  --line:#dfe4ee; --ink:#1b2333; --muted:#6b7688;
+  --yellow:#fff8e1; --yline:#f0c96b; --ok:#1c8a4e; --bad:#c0392b;
+  --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai","Leelawadee UI",Tahoma,-apple-system,sans-serif;
+  font-size:15px;line-height:1.5;padding-bottom:98px}
+body.lang-mm{font-family:"Noto Sans Myanmar","Padauk","Myanmar Text","Sarabun",sans-serif;
+  line-height:1.75}
+.sub{display:block;font-size:11.5px;color:var(--muted);font-weight:400;
+  font-family:"Sarabun",Tahoma,sans-serif;line-height:1.35;margin-top:1px}
+
+header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;
+  padding:14px 16px 12px;position:sticky;top:0;z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+header h1{margin:0;font-size:18px;font-weight:700;line-height:1.35}
+header h1 .sub{color:#b9cdf2;font-size:12.5px}
+.langtabs{display:flex;gap:6px;margin-top:11px;background:rgba(255,255,255,.14);
+  padding:4px;border-radius:11px}
+.langtabs button{flex:1;border:0;background:transparent;color:#d7e3fa;font:inherit;
+  font-size:14.5px;font-weight:700;padding:8px 4px;border-radius:8px;cursor:pointer}
+.langtabs button.on{background:#fff;color:var(--navy)}
+
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(20,30,60,.05)}
+.card h2{margin:0 0 12px;font-size:15.5px;color:var(--navy);display:flex;
+  align-items:flex-start;gap:9px;line-height:1.35}
+.card h2 .n{background:var(--navy);color:#fff;width:23px;height:23px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;font-size:12.5px;
+  flex:0 0 auto;margin-top:1px;font-family:"Sarabun",Tahoma,sans-serif}
+.card h2 .sub{color:#7d89a3}
+
+label{display:block;font-size:12.5px;color:var(--muted);margin:0 0 5px;font-weight:600;line-height:1.35}
+input,select,textarea{width:100%;padding:11px;border:1px solid var(--line);
+  border-radius:10px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--navy2);outline-offset:-1px;border-color:var(--navy2)}
+.fill{background:var(--yellow);border-color:var(--yline)}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:1fr 1fr}
+.btn{border:0;border-radius:11px;padding:11px 16px;font:inherit;font-weight:600;
+  cursor:pointer;font-size:14.5px}
+.btn-p{background:var(--navy);color:#fff;width:100%;padding:13px;font-size:16px}
+.btn-p .sub{color:#b9cdf2}
+.btn-p:disabled{opacity:.55}
+.btn-s{background:#eef1f7;color:var(--navy)}
+.btn-d{background:#fdecea;color:var(--bad);padding:7px 13px;font-size:13px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;background:var(--yellow);border:1.5px solid var(--yline);border-radius:11px;
+  padding:13px 6px;font-family:"Sarabun",Tahoma,sans-serif;font-weight:700;font-size:17px;
+  color:var(--navy);cursor:pointer}
+.seg button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.drop{border:2px dashed var(--yline);background:var(--yellow);border-radius:12px;
+  padding:20px 12px;text-align:center;color:#8a6d1f;font-size:14.5px;cursor:pointer;line-height:1.45}
+.drop .sub{color:#a08348}
+.drop.has{border-style:solid;border-color:#bfe3cd;background:#f6fcf8;color:var(--ok)}
+.drop.has .sub{color:#4d9a72}
+.thumbs{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.thumb{position:relative;width:72px;height:72px;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb b{position:absolute;top:1px;right:1px;background:rgba(0,0,0,.65);color:#fff;
+  width:20px;height:20px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:14px;cursor:pointer;font-weight:400}
+.item{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fcfdff}
+.item.done{border-color:#bfe3cd;background:#f6fcf8}
+.item-head{display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:11px}
+.item-no{font-weight:700;color:var(--navy);font-size:14.5px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.qty{display:grid;grid-template-columns:1fr 1.15fr;gap:11px}
+.preview{margin-top:10px;padding:10px 12px;background:#eef1f7;border-radius:9px;
+  font-size:15px;font-weight:700;color:var(--navy);min-height:40px;
+  font-family:"Sarabun",Tahoma,sans-serif}
+.sum{background:#f4f7fc;border-radius:11px;padding:12px}
+.sum b{font-size:16px;color:var(--navy)}
+.sum ul{margin:7px 0 0;padding-left:20px;font-size:14.5px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+  padding:10px 16px calc(10px + env(safe-area-inset-bottom,0));z-index:30;
+  box-shadow:0 -2px 12px rgba(20,30,60,.08)}
+.bar .wrap{padding:0}
+.hint{font-size:11.5px;color:var(--muted);margin-top:5px;text-align:center}
+.result{display:none}
+.result.show{display:block;background:#eaf7ef;border-color:#bfe3cd}
+.result h2{color:var(--ok)}
+.result a{display:block;background:#fff;border:1px solid #bfe3cd;border-radius:10px;
+  padding:12px;margin-top:9px;color:var(--navy);text-decoration:none;font-weight:600;word-break:break-all}
+.prog{display:none;font-size:13px;color:var(--muted);text-align:center;margin-top:7px}
+.prog.show{display:block}
+.req{color:var(--bad)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 data-k="appTitle"></h1>
+  <div class="langtabs" id="langtabs">
+    <button type="button" data-l="th">ไทย</button>
+    <button type="button" data-l="mm">မြန်မာ / EN</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2><span class="n">1</span><span data-k="s1"></span></h2>
+    <div class="grid g2">
+      <div><label data-k="billDate"></label><input id="billDate" type="date" class="fill"></div>
+      <div><label data-k="billNo"></label><input id="billNo" class="fill" data-ph="billNoPh" autocomplete="off"></div>
+    </div>
+    <div style="margin-top:12px">
+      <label data-k="carrier"></label>
+      <div class="seg" id="carrierSeg">
+        <button type="button" data-c="CMT">CMT</button>
+        <button type="button" data-c="GCL">GCL</button>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label data-k="worker"></label>
+      <input id="worker" class="fill" data-ph="workerPh" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span><span data-k="s2"></span></h2>
+    <div class="drop" id="billDrop"></div>
+    <div class="thumbs" id="billThumbs"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span><span data-k="s3"></span></h2>
+    <div class="drop" id="goodsDrop"></div>
+    <div class="thumbs" id="goodsThumbs"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span><span data-k="s4"></span></h2>
+    <div class="btn-row">
+      <button class="btn btn-s" id="addItem" data-k="addItem"></button>
+      <button class="btn btn-s" id="add5" data-k="add5"></button>
+    </div>
+    <div id="items"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span><span data-k="s5"></span></h2>
+    <textarea id="note" rows="3" class="fill" data-ph="notePh"></textarea>
+    <div class="sum" style="margin-top:12px">
+      <b id="sumLine"></b>
+      <ul id="sumList"></ul>
+    </div>
+  </div>
+
+  <div class="result card" id="result"></div>
+</div>
+
+<div class="bar">
+  <div class="wrap">
+    <button class="btn btn-p" id="submit" data-k="submit"></button>
+    <div class="prog" id="prog"></div>
+    <div class="hint" id="draftHint"></div>
+  </div>
+</div>
+
+<script>
+/* ========= ตั้งค่า: ใส่ URL ของ Apps Script Web App ตรงนี้ ========= */
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+/* ================================================================= */
+
+const $ = id => document.getElementById(id);
+const DRAFT = 'shipmentDraft_v3';
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ===================== ภาษา =====================
+   th = ไทยล้วน   |   mm = พม่า + อังกฤษกำกับใต้
+   ค่าที่บันทึกลง Google Sheet เป็นชุดเดียวกันเสมอ (ภาษาไทย)
+   ================================================ */
+const T = {
+  appTitle:{th:'บันทึกบิลขนส่ง + ของเข้า', mm:'ပို့ဆောင်ရေးဘောက်ချာ + ကုန်ပစ္စည်း', en:'Shipment Bill & Goods Record'},
+  s1:{th:'ข้อมูลบิลขนส่ง', mm:'ပို့ဆောင်ရေးဘောက်ချာ အချက်အလက်', en:'Shipping bill details'},
+  s2:{th:'แนบรูปบิลขนส่ง', mm:'ဘောက်ချာဓာတ်ပုံ တွဲတင်ရန်', en:'Attach bill photos'},
+  s3:{th:'แนบรูปของ', mm:'ကုန်ပစ္စည်းဓာတ်ပုံ တွဲတင်ရန်', en:'Attach goods photos'},
+  s4:{th:'รายการ / สินค้าที่มา', mm:'ရောက်ရှိလာသော ကုန်ပစ္စည်းစာရင်း', en:'Goods received list'},
+  s5:{th:'หมายเหตุ', mm:'မှတ်ချက်', en:'Remarks'},
+
+  billDate:{th:'วันที่บิล *', mm:'ဘောက်ချာရက်စွဲ *', en:'Bill date *'},
+  billNo:{th:'เลขที่บิล / ตู้', mm:'ဘောက်ချာ / ကွန်တိန်နာနံပါတ်', en:'Bill / container no.'},
+  billNoPh:{th:'เช่น SEA-03672', mm:'ဥပမာ SEA-03672', en:'e.g. SEA-03672'},
+  carrier:{th:'บริษัทขนส่ง *', mm:'ပို့ဆောင်ရေးကုမ္ပဏီ *', en:'Carrier *'},
+  worker:{th:'ผู้กรอก *', mm:'ဖြည့်သွင်းသူ အမည် *', en:'Filled in by *'},
+  workerPh:{th:'ชื่อคนกรอก', mm:'သင့်အမည်', en:'Your name'},
+
+  tapBill:{th:'📄 แตะเพื่อถ่ายรูปบิล', mm:'📄 ဘောက်ချာဓာတ်ပုံ ရိုက်ရန် နှိပ်ပါ', en:'Tap to take bill photo'},
+  tapGoods:{th:'📦 แตะเพื่อถ่ายรูปของ', mm:'📦 ကုန်ပစ္စည်းဓာတ်ပုံ ရိုက်ရန် နှိပ်ပါ', en:'Tap to take goods photo'},
+  doneBill:{th:'✓ แนบรูปบิลแล้ว', mm:'✓ ဘောက်ချာဓာတ်ပုံ', en:'Bill photos attached'},
+  doneGoods:{th:'✓ แนบรูปของแล้ว', mm:'✓ ကုန်ပစ္စည်းဓာတ်ပုံ', en:'Goods photos attached'},
+  more:{th:'รูป — แตะเพื่อเพิ่ม', mm:'ပုံ — ထပ်ထည့်ရန် နှိပ်ပါ', en:'photos — tap to add more'},
+
+  addItem:{th:'+ เพิ่มรายการ', mm:'+ စာရင်းထည့်ရန်', en:'Add item'},
+  add5:{th:'+ เพิ่ม 5 รายการ', mm:'+ ၅ ခု ထည့်ရန်', en:'Add 5 items'},
+  itemNo:{th:'รายการที่', mm:'စာရင်း', en:'Item'},
+  del:{th:'ลบ', mm:'ဖျက်', en:'Delete'},
+  code:{th:'รหัส / ชื่อสินค้า', mm:'ကုန်ပစ္စည်း ကုဒ် / အမည်', en:'Code / item name'},
+  codePh:{th:'5207 หรือ ผ้า', mm:'5207 / အထည်', en:'5207 or Fabric'},
+  size:{th:'ไซส์ / รายละเอียด', mm:'ဆိုက် / အသေးစိတ်', en:'Size / detail'},
+  qty:{th:'จำนวน', mm:'အရေအတွက်', en:'Quantity'},
+  unit:{th:'หน่วย', mm:'ယူနစ်', en:'Unit'},
+  itemNote:{th:'หมายเหตุรายการนี้', mm:'ဤစာရင်း၏ မှတ်ချက်', en:'Note for this item'},
+  notePh:{th:'เช่น ห่อที่ 5 ถุงขาด / ของขาด 2 ชิ้น', mm:'ဥပမာ - ၅ ထုပ် အိတ်ပေါက် / ၂ ခု လျော့', en:'e.g. bag 5 torn / 2 pcs short'},
+
+  sumNone:{th:'ยังไม่มีรายการ', mm:'စာရင်း မရှိသေးပါ', en:'No items yet'},
+  sumN:{th:'รวม %n รายการ', mm:'စုစုပေါင်း %n ခု', en:'%n items total'},
+
+  submit:{th:'ส่งข้อมูล + อัพโหลดรูป', mm:'အချက်အလက်နှင့် ဓာတ်ပုံ ပို့ရန်', en:'Submit & upload photos'},
+  draft:{th:'เก็บร่างในเครื่องอัตโนมัติ', mm:'စက်ထဲတွင် အလိုအလျောက် သိမ်းထားသည်', en:'Draft saved on this phone'},
+  draftAt:{th:'เก็บร่างแล้ว', mm:'သိမ်းပြီး', en:'Draft saved'},
+  draftFull:{th:'รูปเยอะเกินไป เก็บร่างไม่ได้ — กรุณากดส่ง', mm:'ဓာတ်ပုံများနေသည် — ပို့ပါ', en:'Too many photos to save draft — please submit'},
+  saving:{th:'กำลังบันทึกข้อมูล...', mm:'သိမ်းဆည်းနေသည်...', en:'Saving...'},
+  uploading:{th:'กำลังอัพโหลดรูป', mm:'ဓာတ်ပုံ တင်နေသည်', en:'Uploading photo'},
+  doneAll:{th:'เสร็จเรียบร้อย', mm:'ပြီးပါပြီ', en:'Done'},
+  okTitle:{th:'✓ บันทึกสำเร็จ', mm:'✓ အောင်မြင်စွာ သိမ်းဆည်းပြီး', en:'Saved successfully'},
+  lFolder:{th:'📁 โฟลเดอร์รอบนี้ใน Google Drive', mm:'📁 Google Drive ဤအကြိမ် ဖိုင်တွဲ', en:'This shipment folder on Drive'},
+  lBillFolder:{th:'📄 โฟลเดอร์รูปบิล', mm:'📄 ဘောက်ချာဓာတ်ပုံ ဖိုင်တွဲ', en:'Bill photos folder'},
+  lGoodsFolder:{th:'📦 โฟลเดอร์รูปของ', mm:'📦 ကုန်ပစ္စည်းဓာတ်ပုံ ဖိုင်တွဲ', en:'Goods photos folder'},
+  lSheet:{th:'📊 สรุปรอบนี้ (Sheet)', mm:'📊 အကျဉ်းချုပ် (Sheet)', en:'Summary sheet'},
+  lPdf:{th:'📕 สรุปรอบนี้ (PDF)', mm:'📕 အကျဉ်းချုပ် (PDF)', en:'Summary PDF'},
+  lMaster:{th:'🗂 ตารางรวมทุกรอบ', mm:'🗂 စုစုပေါင်းဇယား', en:'All shipments table'},
+  sent:{th:'ส่งแล้ว ล้างร่างเรียบร้อย', mm:'ပို့ပြီးပါပြီ', en:'Submitted'},
+  photos:{th:'รูป', mm:'ဓာတ်ပုံ', en:'photos'},
+
+  errDate:{th:'กรุณาเลือกวันที่บิล', mm:'ဘောက်ချာရက်စွဲ ရွေးပါ', en:'Please choose the bill date'},
+  errCarrier:{th:'กรุณาเลือกบริษัทขนส่ง CMT หรือ GCL', mm:'ပို့ဆောင်ရေးကုမ္ပဏီ CMT သို့ GCL ရွေးပါ', en:'Please choose CMT or GCL'},
+  errWorker:{th:'กรุณากรอกชื่อผู้กรอก', mm:'သင့်အမည် ရေးပါ', en:'Please enter your name'},
+  errItems:{th:'ยังไม่มีรายการสินค้า', mm:'ကုန်ပစ္စည်းစာရင်း မရှိသေးပါ', en:'No goods listed yet'},
+  askBill:{th:'ยังไม่ได้แนบรูปบิล ต้องการส่งเลยหรือไม่?', mm:'ဘောက်ချာဓာတ်ပုံ မတွဲရသေးပါ — ပို့မလား?', en:'No bill photo attached. Submit anyway?'},
+  errSend:{th:'ส่งไม่สำเร็จ', mm:'မအောင်မြင်ပါ — အချက်အလက် သိမ်းထားသည်၊ ထပ်ပို့ကြည့်ပါ', en:'Submit failed — draft kept, please try again'},
+  errUrl:{th:'ยังไม่ได้ใส่ URL ของ Apps Script ในไฟล์ HTML', mm:'Apps Script URL မထည့်ရသေးပါ', en:'Apps Script URL is not set in the HTML file'}
+};
+
+/* หน่วย — value ที่บันทึกเป็นภาษาไทยเสมอ */
+const UNITS = [
+  {v:'ห่อ',   mm:'ထုပ်',   en:'Pack'},
+  {v:'ม้วน',  mm:'လိပ်',   en:'Roll'},
+  {v:'ชิ้น',  mm:'ခု',     en:'Piece'},
+  {v:'กล่อง', mm:'ဘူး',    en:'Box'},
+  {v:'ถุง',   mm:'အိတ်',   en:'Bag'},
+  {v:'โหล',   mm:'ဒါဇင်',  en:'Dozen'}
+];
+function unitLabel(u){
+  return lang==='th' ? u.v : u.mm + ' · ' + u.en;
+}
+
+let lang = localStorage.getItem('formLang') || 'th';
+
+/* คืนข้อความตามภาษาที่เลือก (mm = พม่า + อังกฤษใต้) */
+function t(k, vars){
+  const e = T[k]; if(!e) return k;
+  let main = lang==='th' ? e.th : e.mm;
+  if(vars) Object.keys(vars).forEach(x => main = main.replace('%'+x, vars[x]));
+  return main;
+}
+function tHtml(k, vars){
+  const e = T[k]; if(!e) return k;
+  if(lang==='th'){
+    let s = e.th;
+    if(vars) Object.keys(vars).forEach(x => s = s.replace('%'+x, vars[x]));
+    return esc(s).replace('*','<span class="req">*</span>');
+  }
+  let m = e.mm, n = e.en;
+  if(vars) Object.keys(vars).forEach(x => { m = m.replace('%'+x, vars[x]); n = n.replace('%'+x, vars[x]); });
+  return esc(m).replace('*','<span class="req">*</span>')
+       + '<span class="sub">' + esc(n).replace('*','') + '</span>';
+}
+/* ข้อความสำหรับ alert / placeholder (บรรทัดเดียว ไม่มี HTML) */
+function tPlain(k){
+  const e = T[k]; if(!e) return k;
+  return lang==='th' ? e.th : e.mm + '\n' + e.en;
+}
+function tPh(k){
+  const e = T[k]; if(!e) return '';
+  return lang==='th' ? e.th : e.mm + ' · ' + e.en;
+}
+
+function applyLang(){
+  document.body.classList.toggle('lang-mm', lang==='mm');
+  document.documentElement.lang = lang==='th' ? 'th' : 'my';
+  $('langtabs').querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.l===lang));
+  document.querySelectorAll('[data-k]').forEach(el => el.innerHTML = tHtml(el.dataset.k));
+  document.querySelectorAll('[data-ph]').forEach(el => el.placeholder = tPh(el.dataset.ph));
+  $('draftHint').textContent = tPh('draft');
+  renderBill(); renderGoods(); renderItems(); recalc();
+  localStorage.setItem('formLang', lang);
+}
+$('langtabs').querySelectorAll('button').forEach(b=>{
+  b.onclick = () => { lang = b.dataset.l; applyLang(); };
+});
+
+/* ===================== รูป ===================== */
+let billImgs = [], goodsImgs = [], items = [], carrier = '';
+
+function compress(file, maxSide = 1600, quality = 0.72){
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        const s = Math.min(1, maxSide / Math.max(w, h));
+        w = Math.round(w*s); h = Math.round(h*s);
+        const cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(cv.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject; img.src = fr.result;
+    };
+    fr.onerror = reject; fr.readAsDataURL(file);
+  });
+}
+function photoSection(dropId, thumbsId, arr, tapKey, doneKey){
+  $(dropId).onclick = () => {
+    const inp = document.createElement('input');
+    inp.type='file'; inp.accept='image/*'; inp.multiple=true;
+    inp.onchange = async e => {
+      for (const f of e.target.files) arr.push({name:f.name, dataUrl: await compress(f)});
+      render(); saveDraft();
+    };
+    inp.click();
+  };
+  function render(){
+    const box = $(thumbsId);
+    box.innerHTML = arr.map((im,i)=>
+      `<div class="thumb"><img src="${im.dataUrl}"><b data-i="${i}">×</b></div>`).join('');
+    box.querySelectorAll('b').forEach(b => b.onclick = () => {
+      arr.splice(+b.dataset.i,1); render(); saveDraft();
+    });
+    const d = $(dropId);
+    d.classList.toggle('has', arr.length>0);
+    if(!arr.length){ d.innerHTML = tHtml(tapKey); return; }
+    d.innerHTML = lang==='th'
+      ? `${T[doneKey].th} ${arr.length} ${T.more.th}`
+      : `${T[doneKey].mm} ${arr.length} ${T.more.mm}<span class="sub">${T[doneKey].en} — ${arr.length} ${T.more.en}</span>`;
+  }
+  return render;
+}
+const renderBill = photoSection('billDrop','billThumbs',billImgs,'tapBill','doneBill');
+const renderGoods = photoSection('goodsDrop','goodsThumbs',goodsImgs,'tapGoods','doneGoods');
+
+/* ===================== บริษัทขนส่ง ===================== */
+$('carrierSeg').querySelectorAll('button').forEach(b=>{
+  b.onclick = () => {
+    carrier = b.dataset.c;
+    $('carrierSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+    saveDraft();
+  };
+});
+function paintCarrier(){
+  $('carrierSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on', x.dataset.c===carrier));
+}
+
+/* ===================== รายการสินค้า ===================== */
+function addItem(d = {}){ items.push(Object.assign({code:'', size:'', qty:'', unit:'ห่อ', note:''}, d)); }
+
+/* บรรทัดสรุปที่บันทึกลง Sheet — ภาษาไทยเสมอ */
+function lineText(it){
+  if(!it.code && !it.qty) return '';
+  return [it.code, it.size, it.qty ? it.qty + ' ' + it.unit : ''].filter(Boolean).join(' ');
+}
+function renderItems(){
+  $('items').innerHTML = items.map((it,i)=>`
+    <div class="item ${it.code && it.qty ? 'done':''}" data-i="${i}">
+      <div class="item-head">
+        <span class="item-no">${esc(t('itemNo'))} ${i+1}</span>
+        <button class="btn btn-d" data-del="${i}">${esc(t('del'))}</button>
+      </div>
+      <div class="row2">
+        <div><label>${tHtml('code')}</label>
+          <input data-f="code" data-i="${i}" list="codeList" class="fill"
+                 value="${esc(it.code)}" placeholder="${esc(tPh('codePh'))}" autocomplete="off"></div>
+        <div><label>${tHtml('size')}</label>
+          <input data-f="size" data-i="${i}" list="sizeList" class="fill"
+                 value="${esc(it.size)}" placeholder="M-6XL" autocomplete="off"></div>
+      </div>
+      <div class="qty" style="margin-top:11px">
+        <div><label>${tHtml('qty')}</label>
+          <input data-f="qty" data-i="${i}" type="number" step="1" min="0" inputmode="numeric"
+                 class="fill" value="${esc(it.qty)}"></div>
+        <div><label>${tHtml('unit')}</label>
+          <select data-f="unit" data-i="${i}" class="fill">
+            ${UNITS.map(u=>`<option value="${u.v}" ${it.unit===u.v?'selected':''}>${esc(unitLabel(u))}</option>`).join('')}
+          </select></div>
+      </div>
+      <div style="margin-top:11px"><label>${tHtml('itemNote')}</label>
+        <input data-f="note" data-i="${i}" class="fill" value="${esc(it.note)}" autocomplete="off"></div>
+      <div class="preview" data-p="${i}">${esc(lineText(it))}</div>
+    </div>`).join('');
+
+  $('items').querySelectorAll('[data-f]').forEach(el=>{
+    const upd = () => {
+      const i = +el.dataset.i, it = items[i];
+      it[el.dataset.f] = el.value;
+      el.closest('.item').classList.toggle('done', !!(it.code && it.qty));
+      const pv = $('items').querySelector(`[data-p="${i}"]`);
+      if(pv) pv.textContent = lineText(it);
+      recalc(); saveDraft();
+    };
+    el.oninput = upd; el.onchange = upd;
+  });
+  $('items').querySelectorAll('[data-del]').forEach(b=>{
+    b.onclick = () => { items.splice(+b.dataset.del,1); renderItems(); recalc(); saveDraft(); };
+  });
+  mkList('codeList', items.map(i=>i.code));
+  mkList('sizeList', ['S-XL','M-3XL','M-6XL','2XL-6XL','FREE SIZE'].concat(items.map(i=>i.size)));
+}
+function mkList(id, vals){
+  let dl = $(id);
+  if(!dl){ dl = document.createElement('datalist'); dl.id = id; document.body.appendChild(dl); }
+  dl.innerHTML = [...new Set(vals.filter(Boolean))].map(v=>`<option value="${esc(v)}"></option>`).join('');
+}
+
+/* ===================== สรุป ===================== */
+function recalc(){
+  const filled = items.filter(i=>i.code || i.qty);
+  const byUnit = {};
+  filled.forEach(i=>{ byUnit[i.unit] = (byUnit[i.unit]||0) + (parseFloat(i.qty)||0); });
+  $('sumLine').innerHTML = filled.length ? tHtml('sumN',{n:filled.length}) : tHtml('sumNone');
+  $('sumList').innerHTML = Object.keys(byUnit).map(v=>{
+    const u = UNITS.find(x=>x.v===v) || {v:v, mm:'', en:''};
+    return `<li>${esc(unitLabel(u))} — <b>${byUnit[v].toLocaleString('en-US')}</b></li>`;
+  }).join('');
+}
+
+/* ===================== ร่างในเครื่อง ===================== */
+function saveDraft(){
+  try{
+    localStorage.setItem(DRAFT, JSON.stringify({
+      billDate:$('billDate').value, billNo:$('billNo').value, carrier,
+      worker:$('worker').value, note:$('note').value, items, billImgs, goodsImgs
+    }));
+    $('draftHint').textContent = tPh('draftAt') + ' ' + new Date().toLocaleTimeString('th-TH');
+  }catch(e){ $('draftHint').textContent = tPh('draftFull'); }
+}
+function loadDraft(){
+  try{
+    const d = JSON.parse(localStorage.getItem(DRAFT)||'null');
+    if(!d) return false;
+    $('billDate').value = d.billDate||''; $('billNo').value = d.billNo||'';
+    $('worker').value = d.worker||''; $('note').value = d.note||'';
+    carrier = d.carrier||''; items = d.items||[];
+    billImgs.push.apply(billImgs, d.billImgs||[]);
+    goodsImgs.push.apply(goodsImgs, d.goodsImgs||[]);
+    return true;
+  }catch(e){ return false; }
+}
+
+/* ===================== ส่งข้อมูล ===================== */
+async function post(payload){
+  const res = await fetch(API_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload)
+  });
+  const txt = await res.text();
+  let out; try{ out = JSON.parse(txt); }catch(e){ throw new Error(txt.slice(0,120)); }
+  if(!out.ok) throw new Error(out.error||'error');
+  return out;
+}
+
+$('submit').onclick = async () => {
+  if(API_URL.indexOf('http')!==0){ alert(tPlain('errUrl')); return; }
+  if(!$('billDate').value){ alert(tPlain('errDate')); $('billDate').focus(); return; }
+  if(!carrier){ alert(tPlain('errCarrier')); return; }
+  if(!$('worker').value.trim()){ alert(tPlain('errWorker')); $('worker').focus(); return; }
+  const filled = items.filter(i=>i.code || i.qty);
+  if(!filled.length){ alert(tPlain('errItems')); return; }
+  if(!billImgs.length && !confirm(tPlain('askBill'))) return;
+
+  const btn = $('submit'); btn.disabled = true;
+  const prog = $('prog'); prog.classList.add('show');
+  try{
+    prog.textContent = tPh('saving');
+    const meta = await post({
+      action:'createEntry',
+      head:{ billDate:$('billDate').value, billNo:$('billNo').value.trim(),
+             carrier, worker:$('worker').value.trim() },
+      note:$('note').value,
+      lang: lang,
+      items: filled.map((it,i)=>({
+        no:i+1, code:it.code, size:it.size, qty:it.qty, unit:it.unit,
+        note:it.note, line:lineText(it)
+      })),
+      billPhotoCount: billImgs.length,
+      goodsPhotoCount: goodsImgs.length
+    });
+
+    const jobs = [];
+    billImgs.forEach((im,i)=> jobs.push({
+      kind:'bill', idx:i+1, dataUrl:im.dataUrl,
+      folderId: meta.billFolderId || meta.folderId }));
+    goodsImgs.forEach((im,i)=> jobs.push({
+      kind:'goods', idx:i+1, dataUrl:im.dataUrl,
+      folderId: meta.goodsFolderId || meta.folderId }));
+
+    for(let i=0;i<jobs.length;i++){
+      prog.textContent = `${tPh('uploading')} ${i+1}/${jobs.length}`;
+      await post({action:'uploadPhoto', entryId:meta.entryId,
+                  folderId:jobs[i].folderId, photo:jobs[i]});
+    }
+
+    prog.textContent = tPh('doneAll');
+    const r = $('result'); r.classList.add('show');
+    r.innerHTML = `<h2>${tHtml('okTitle')}</h2>
+      <div style="font-size:13px;color:#6b7688;margin-top:4px">
+        ${esc(meta.entryId)} · ${esc(meta.timestamp)} · ${jobs.length} ${esc(t('photos'))}</div>
+      <a href="${meta.folderUrl}" target="_blank" rel="noopener">${tHtml('lFolder')}</a>
+      ${meta.billFolderUrl?`<a href="${meta.billFolderUrl}" target="_blank" rel="noopener">${tHtml('lBillFolder')}</a>`:''}
+      ${meta.goodsFolderUrl?`<a href="${meta.goodsFolderUrl}" target="_blank" rel="noopener">${tHtml('lGoodsFolder')}</a>`:''}
+      <a href="${meta.sheetUrl}" target="_blank" rel="noopener">${tHtml('lSheet')}</a>
+      ${meta.pdfUrl?`<a href="${meta.pdfUrl}" target="_blank" rel="noopener">${tHtml('lPdf')}</a>`:''}
+      ${meta.masterUrl?`<a href="${meta.masterUrl}" target="_blank" rel="noopener">${tHtml('lMaster')}</a>`:''}`;
+    r.scrollIntoView({behavior:'smooth'});
+    localStorage.removeItem(DRAFT);
+    $('draftHint').textContent = tPh('sent');
+  }catch(err){
+    prog.textContent = '';
+    alert(tPlain('errSend') + '\n\n' + err.message);
+  }finally{
+    btn.disabled = false;
+    setTimeout(()=>prog.classList.remove('show'), 4000);
+  }
+};
+
+/* ===================== ปุ่ม / เริ่มต้น ===================== */
+$('addItem').onclick = () => { addItem(); renderItems(); recalc(); saveDraft(); };
+$('add5').onclick = () => { for(let i=0;i<5;i++) addItem(); renderItems(); recalc(); saveDraft(); };
+['billDate','billNo','worker','note'].forEach(id=> $(id).onchange = saveDraft);
+
+if(!loadDraft()){
+  $('billDate').value = new Date().toISOString().slice(0,10);
+  addItem();
+}
+paintCarrier();
+applyLang();
+</script>
+</body>
+</html>
